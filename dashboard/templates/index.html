@@ -1,0 +1,61 @@
+<!-- dashboard.html -->
+{% load static %}
+<head>
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+<link rel="stylesheet" href="{% static '/css/style.css' %}">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,200;0,300;0,400;0,500;0,600;1,200;1,300;1,400;1,500;1,600&family=Noto+Serif+NP+Hmong:wght@700&display=swap">
+</head>
+
+<body>
+    {% block content %}
+    <div id="logo-div">
+        My Dashboard
+    </div>
+
+    <div id="nav-div">
+        Fraud Detection - Medicare Claims
+    </div>
+    <div id="wrapper-div">
+        <form method="get" id="estadoComboForm" action="/">
+            <label for="estadoCombo">Choose a state:</label>
+            <select id="estadoCombo" name="estadoCombo">
+                <!-- ComboBox is populated using custom.js -->
+            </select>
+        </form>
+
+        <div id="main-div" class="clearfix">
+            <div class="box" id="chart"></div>
+            <div class="box" id="chart2"></div>
+            <div class="box" id="chart3_container">
+                <div id="legend"></div>
+                <div id="chart3"></div>
+            </div>
+            <div class="tooltip" id="tooltip"></div>
+        </div>
+
+        <div id="chart5"></div>
+
+        <div id="graph-div">
+            <svg id="viz5"></svg>
+        </div>
+        
+        <div id="footer-div">
+            @ 2023 Moving Forward Corporation
+        </div>
+    </div>
+    {% endblock %}
+</body>
+{% block script %}
+<!-- Load d3.js -->
+<script src="https://d3js.org/d3.v7.min.js" charset="utf-8"></script>
+<script src="{% static 'js/custom.js' %}"></script>
+<script src="{% static 'js/simple_bar_chart.js' %}"></script>
+<script src="{% static 'js/bubble_chart.js' %}"></script>
+<script src="{% static 'js/stacked_bar_chart.js' %}"></script>
+<script src="{% static 'js/donut_chart.js' %}"></script>
+<script src="{% static 'js/timeline_chart.js' %}"></script>
+<script src="{% static 'js/stacked_bar_chart_org.js' %}"></script>
+
+<!-- Load color scale -->
+<script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+{% endblock %}
