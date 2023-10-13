@@ -28,7 +28,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS').split(' ')
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS')
 
 # Application definition
 
@@ -82,8 +82,8 @@ TEMPLATES = [
 DATABASE_URL = os.environ.get('DATABASE_URL')
 
 if not DEBUG:
-    DATABASES = { 
-        'default': dj_database_url.config() 
+    DATABASES = {
+        "default": dj_database_url.parse(os.environ.get("DATABASE_URL"))
     }
 else:
     DATABASES = {
