@@ -64,16 +64,23 @@ def bubblechart(request):
         query = """
         SELECT 
             state, 
-            (SUM(fraud_flag)*1.0 / COUNT(id)*1.0)*100 As percent, 
+            (SUM(fraud_flag)*1.0 / COUNT(id)*1.0)*100 AS percent, 
             COUNT(DISTINCT id) AS claim_count, 
-            COUNT(DISTINCT provider) As prov_count,
+            COUNT(DISTINCT provider) AS prov_count,
             SUM(total_net_amount) AS total_net_amount,
-            IIF(state>50, '51-54', (IIF(state>40, '41-50', IIF(state>30, '31-40', IIF(state>20, '21-30', IIF(state>10, '11-20', '1-10')))))) AS region
+            CASE 
+                WHEN state > 50 THEN '51-54' 
+                WHEN state > 40 THEN '41-50' 
+                WHEN state > 30 THEN '31-40' 
+                WHEN state > 20 THEN '21-30' 
+                WHEN state > 10 THEN '11-20' 
+                ELSE '1-10' 
+            END AS region
         FROM 
             dashboard_ddata 
-        GROUP 
-            BY state;
-        """.format(state)
+        GROUP BY 
+            state;
+        """
     else:
         query = """
         SELECT 
@@ -82,7 +89,14 @@ def bubblechart(request):
             COUNT(DISTINCT id) AS claim_count, 
             COUNT(DISTINCT provider) As prov_count,
             SUM(total_net_amount) AS total_net_amount,
-            IIF(state>50, '51-54', (IIF(state>40, '41-50', IIF(state>30, '31-40', IIF(state>20, '21-30', IIF(state>10, '11-20', '1-10')))))) AS region
+            CASE 
+                WHEN state > 50 THEN '51-54' 
+                WHEN state > 40 THEN '41-50' 
+                WHEN state > 30 THEN '31-40' 
+                WHEN state > 20 THEN '21-30' 
+                WHEN state > 10 THEN '11-20' 
+                ELSE '1-10' 
+            END AS region
         FROM 
             dashboard_ddata
         WHERE 
@@ -168,11 +182,11 @@ def stackbarchart(request):
     if state == "ALL":
         query = """
         SELECT
-            "ALL" As state,
-            state As county,
+            "ALL" AS state,
+            state AS county,
             AVG(total_net_amount) AS avg_total_net_amount,
-            AVG(IIF(fraud_flag=0, total_net_amount, 0)) As cat1,
-            AVG(IIF(fraud_flag=1, total_net_amount, 0)) As cat2
+            AVG(CASE WHEN fraud_flag = 0 THEN total_net_amount ELSE 0 END) AS cat1,
+            AVG(CASE WHEN fraud_flag = 1 THEN total_net_amount ELSE 0 END) AS cat2
         FROM   
             dashboard_ddata 
         GROUP BY 
@@ -186,8 +200,8 @@ def stackbarchart(request):
             state,
             county,
             AVG(total_net_amount) AS avg_total_net_amount,
-            AVG(IIF(fraud_flag=0, total_net_amount, 0)) As cat1,
-            AVG(IIF(fraud_flag=1, total_net_amount, 0)) As cat2
+            AVG(CASE WHEN fraud_flag = 0 THEN total_net_amount ELSE 0 END) AS cat1,
+            AVG(CASE WHEN fraud_flag = 1 THEN total_net_amount ELSE 0 END) AS cat2
         FROM   
             dashboard_ddata
         WHERE
@@ -197,47 +211,6 @@ def stackbarchart(request):
         ORDER BY 
             state, county;
         """.format(state)
-    cursor.execute(query)
-    data = dictfetchall(cursor)
-    return JsonResponse(data, safe=False)
-
-def barchart(request):
-    cursor = connection.cursor()
-    query = """
-    SELECT
-        state,
-        county,
-        AVG(total_net_amount) AS avg_total_net_amount
-    FROM
-        dashboard_ddata
-    WHERE
-        state=2
-    GROUP BY 
-        state, county
-    ORDER BY 
-        state, county;
-    """
-    cursor.execute(query)
-    data = dictfetchall(cursor)
-    return JsonResponse(data, safe=False)
-
-def groupbarchart(request):
-    cursor = connection.cursor()
-    query = """
-    SELECT
-        state,
-        county,
-        IIf(fraud_flag=1, "Potential Fraud", "Not Fraud") AS cat,
-        AVG(total_net_amount) AS avg_total_net_amount
-    FROM
-        dashboard_ddata
-    WHERE 
-        state=2
-    GROUP BY 
-        state, county, cat
-    ORDER BY 
-        state, county, cat;
-    """
     cursor.execute(query)
     data = dictfetchall(cursor)
     return JsonResponse(data, safe=False)
@@ -357,23 +330,3 @@ def createTopTen(state):
                 LIMIT 10;
             """.format(state)
         cursor.execute(query)
-
-def stackbarchart2(request):
-    cursor = connection.cursor()
-    query = """
-    SELECT
-        state,
-        county,
-        AVG(total_net_amount) AS avg_total_net_amount,
-        AVG(IIF(fraud_flag=0, total_net_amount, 0)) As cat1,
-        AVG(IIF(fraud_flag=1, total_net_amount, 0)) As cat2
-    FROM   
-        dashboard_ddata 
-    GROUP BY 
-        state, county
-    ORDER BY 
-        state, county;
-    """
-    cursor.execute(query)
-    data = dictfetchall(cursor)
-    return JsonResponse(data, safe=False)
