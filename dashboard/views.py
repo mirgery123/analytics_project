@@ -215,6 +215,47 @@ def stackbarchart(request):
     data = dictfetchall(cursor)
     return JsonResponse(data, safe=False)
 
+def barchart(request):
+    cursor = connection.cursor()
+    query = """
+    SELECT
+        state,
+        county,
+        AVG(total_net_amount) AS avg_total_net_amount
+    FROM
+        dashboard_ddata
+    WHERE
+        state=2
+    GROUP BY 
+        state, county
+    ORDER BY 
+        state, county;
+    """
+    cursor.execute(query)
+    data = dictfetchall(cursor)
+    return JsonResponse(data, safe=False)
+
+def groupbarchart(request):
+    cursor = connection.cursor()
+    query = """
+    SELECT
+        state,
+        county,
+        IIf(fraud_flag=1, "Potential Fraud", "Not Fraud") AS cat,
+        AVG(total_net_amount) AS avg_total_net_amount
+    FROM
+        dashboard_ddata
+    WHERE 
+        state=2
+    GROUP BY 
+        state, county, cat
+    ORDER BY 
+        state, county, cat;
+    """
+    cursor.execute(query)
+    data = dictfetchall(cursor)
+    return JsonResponse(data, safe=False)
+
 def timeline_chart(request):
     # Obtén el valor de estadoCombo de la solicitud AJAX anterior (capturado en mi_vista)
     state = str(request.session.get('selected_state', 'ALL'))
@@ -330,3 +371,23 @@ def createTopTen(state):
                 LIMIT 10;
             """.format(state)
         cursor.execute(query)
+
+def stackbarchart2(request):
+    cursor = connection.cursor()
+    query = """
+    SELECT
+        state,
+        county,
+        AVG(total_net_amount) AS avg_total_net_amount,
+        AVG(IIF(fraud_flag=0, total_net_amount, 0)) As cat1,
+        AVG(IIF(fraud_flag=1, total_net_amount, 0)) As cat2
+    FROM   
+        dashboard_ddata 
+    GROUP BY 
+        state, county
+    ORDER BY 
+        state, county;
+    """
+    cursor.execute(query)
+    data = dictfetchall(cursor)
+    return JsonResponse(data, safe=False)
