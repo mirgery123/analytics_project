@@ -1,0 +1,162 @@
+*
+{
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+    font-family: Arial;
+    margin-bottom: 10px;
+}
+
+body {
+    background-color: #C1D9EB;
+}
+
+#logo-div
+{
+    width: 100%;
+    min-height: 80px;
+    background-color: #1B264F;
+    color: #F5F3F5;
+    font-family: 'Jost';
+    font-style: italic;
+    font-weight: 600;
+    font-size: 40px;
+    padding-left: 2%;
+    line-height: 80px;
+    margin-bottom: 0px;
+}
+
+#nav-div
+{
+    width: 100%;
+    min-height: 50px;
+    background-color: #377EB8;
+    color: #E0ECF5;
+    font-size: 25px;
+    font-family: 'Jost';
+    font-style: normal;
+    font-weight: 500;
+    padding-left: 2%;
+    line-height: 50px;
+    margin-bottom: 40px;
+}
+
+
+#main-div
+{
+    width: 100%;
+    margin-bottom: 30px;
+}
+
+#main-div .box
+{
+    width: 30%;
+    min-height: 300px;
+    position: relative;
+    background-color: #E0ECF5;
+    float:left;
+    text-align: center;
+    line-height: 300px;
+}
+
+#main-div .box:nth-child(2)
+{
+    margin-left: 5%;
+    margin-right: 5%;
+}
+
+.clearfix::after 
+{
+    content:"";
+    display: block;
+    clear: both;
+}
+
+#stackedBarChart
+{
+    width: 100%;
+    min-height: 900px;
+    position: relative;
+    background-color: #E0ECF5;
+    text-align: left;
+    line-height: 900px;
+    margin-bottom: 30px;
+}
+
+#timelineChart
+{
+    width: 100%;
+    min-height: 250px;
+    position: relative;
+    background-color: #E0ECF5;
+    text-align: left;
+    line-height: 250px;
+    margin-bottom: 30px;
+}
+
+#footer-div
+{
+    width: 100%;
+    min-height: 50px;
+/*     background-color: D3F3EE; */
+    text-align: center;
+    line-height: 50px;
+}
+
+#wrapper-div
+{
+    width: 90%;
+    margin: auto;
+}
+
+.bubbles 
+{
+    stroke-width: 1px;
+    stroke: black;
+    opacity: .8;
+}
+
+.bubbles:hover 
+{
+    stroke: black;
+}
+
+.dot 
+{
+    height: 25px;
+    width: 25px;
+    background-color: D3F3EE;
+    border-radius: 50%;
+    display: inline-block;
+}
+ 
+svg {
+    max-width: 100%;
+  }
+
+
+.axis text {
+    font-family: sans-serif;
+    font-size: 16px;
+}
+
+.legend text {
+    font-family: sans-serif;
+    font-size: 18px;
+}
+
+.title text {
+    font-family: sans-serif;
+    font-size: 18px;
+}
+
+.tooltip {
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: #fff;
+    padding: 5px;
+    border-radius: 5px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s;
+}

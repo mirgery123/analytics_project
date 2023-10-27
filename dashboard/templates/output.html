@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Horizontal Stack Bar Chart</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+
+<body>
+    <svg id="viz6"></svg>
+
+    <script>
+        // Llamar los datos usando d3.json
+        d3.json("/stackbarchart/").then(function(data) {
+
+            // Dimensiones del gráfico
+            var margin = {
+                    top: 20,
+                    right: 30,
+                    bottom: 40,
+                    left: 100
+                },
+                width = 800 - margin.left - margin.right,
+                height = 400 - margin.top - margin.bottom;
+
+            // Crear el stack
+            var stack = d3.stack()
+                .keys(['cat1', 'cat2'])
+                .order(d3.stackOrderNone)
+                .offset(d3.stackOffsetNone);
+
+            var series = stack(data);
+
+            // set colorset
+            var colorScale = d3.scaleOrdinal().range(d3.schemeSet1);
+
+            // Crear la escala para el eje X
+            var x = d3.scaleLinear()
+                .domain([0, d3.max(series, d => d3.max(d, d => d[1]))])
+                .range([0, width]);
+
+            // Crear la escala para el eje Y
+            var y = d3.scaleBand()
+                .domain(data.map(d => d.county))
+                .range([height, 0])
+                .padding(0.1);
+
+            // Crear el lienzo SVG
+            var svg = d3.select("#viz6")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+            // Agregar los grupos de barras
+            var bars = svg.selectAll(".bars")
+                .data(series)
+                .enter().append("g")
+                .attr("fill", function(d) { return colorScale(d.key); });
+
+            // Dibujar las barras
+            bars.selectAll("rect")
+                .data(d => d)
+                .enter().append("rect")
+                .attr("x", d => x(d[0]))
+                .attr("y", d => y(d.data.county))
+                .attr("width", d => x(d[1]) - x(d[0]))
+                .attr("height", y.bandwidth());
+
+            // Agregar el eje X
+            svg.append("g")
+                .attr("transform", "translate(0," + height + ")")
+                .call(d3.axisBottom(x));
+
+            // Agregar el eje Y
+            svg.append("g")
+                .call(d3.axisLeft(y));
+
+        });
+    </script>
+</body>
+
+</html>

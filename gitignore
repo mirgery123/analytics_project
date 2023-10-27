@@ -1,0 +1,5 @@
+venv/
+static/
+settings.py
+settings_deployment.py
+debug.log
